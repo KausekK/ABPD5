@@ -34,11 +34,14 @@ namespace lab5.Controllers;
     [HttpGet("{id}")]
     public ActionResult<IEnumerable<Animal>> GetAnimal(int id)
     {
-        var animal = _mockDb.Animals.Find(i => i.Id == id);
+        var animal = _mockDb.Animals.FirstOrDefault(i => i.Id == id);
         if (animal == null)
         {
             return NotFound();
         }
+    
+        animal.Visits = _mockDb.Visits.Where(v => v.Animal.Id == id).ToList();
+    
         return Ok(animal);
     }
 
@@ -75,6 +78,6 @@ namespace lab5.Controllers;
         _mockDb.Animals.Remove(animal);
         return NoContent();
     }
-
+  
     
     }

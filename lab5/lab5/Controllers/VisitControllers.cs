@@ -25,16 +25,20 @@ public class VisitControllers : ControllerBase
         return Ok(animal.Visits);
     }
 
-    [HttpPost("{id}")]
-    public ActionResult<Visit> AddVisitForAnimal(int id, Visit visit)
+   [HttpPost("{id}")]
+public ActionResult<Visit> AddVisitForAnimal(int id, Visit visit)
+{
+    var animal = _mockDb.Animals.FirstOrDefault(a => a.Id == id);
+    if (animal == null)
     {
-        var animal = _mockDb.Animals.FirstOrDefault(a => a.Id == id);
-        if (animal == null)
-        {
-            return NotFound();
-        }
-        visit.Id = animal.Visits.Count + 1;
-        animal.Visits.Add(visit);
-        return Created();
+        return NotFound();
     }
+    
+    visit.Id = _mockDb.Visits.Count + 1; 
+    visit.Animal = animal; 
+    animal.Visits.Add(visit); 
+    _mockDb.Visits.Add(visit); 
+
+    return Created();
+}
 }
